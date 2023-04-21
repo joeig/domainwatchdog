@@ -42,10 +42,10 @@ func (a *appContext) Run(domainsList *string) int {
 	for _, domain := range domains {
 		domain := domain
 
-		code := a.processDomain(domain)
+		newExitCode := a.processDomain(domain)
 		if exitCode != ExitAvailable {
-			if exitCode != ExitUnknownError {
-				exitCode = code
+			if newExitCode != ExitOK {
+				exitCode = newExitCode
 			}
 		}
 	}
