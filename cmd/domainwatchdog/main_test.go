@@ -15,44 +15,44 @@ func (m *mockWhoisClient) GetDomainStatus(_ string) (whois.Status, error) {
 	return m.WhoisStatus, m.WhoisErr
 }
 
-func Test_run(t *testing.T) {
+func Test_Run(t *testing.T) {
+	app := appContext{WhoisClient: &mockWhoisClient{WhoisStatus: whois.GivenDomain}}
 	domains := "example.com"
-	whoisClient := &mockWhoisClient{WhoisStatus: whois.GivenDomain}
 
-	code := run(&domains, whoisClient)
+	code := app.Run(&domains)
 
 	if code != ExitOK {
 		t.Error("wrong code")
 	}
 }
 
-func Test_run_noDomaisGiven(t *testing.T) {
+func Test_Run_noDomainsGiven(t *testing.T) {
+	app := appContext{WhoisClient: &mockWhoisClient{WhoisStatus: whois.UnknownStatus}}
 	domains := ""
-	whoisClient := &mockWhoisClient{WhoisStatus: whois.UnknownStatus}
 
-	code := run(&domains, whoisClient)
+	code := app.Run(&domains)
 
 	if code != ExitFatalError {
 		t.Error("wrong code")
 	}
 }
 
-func Test_run_statusErr(t *testing.T) {
+func Test_Run_statusErr(t *testing.T) {
+	app := appContext{WhoisClient: &mockWhoisClient{WhoisErr: errors.New("mock")}}
 	domains := "example.com"
-	whoisClient := &mockWhoisClient{WhoisErr: errors.New("mock")}
 
-	code := run(&domains, whoisClient)
+	code := app.Run(&domains)
 
 	if code != ExitUnknownError {
 		t.Error("wrong code")
 	}
 }
 
-func Test_run_statusAvailable(t *testing.T) {
+func Test_Run_statusAvailable(t *testing.T) {
+	app := appContext{WhoisClient: &mockWhoisClient{WhoisStatus: whois.UnknownStatus}}
 	domains := "example.com"
-	whoisClient := &mockWhoisClient{WhoisStatus: whois.UnknownStatus}
 
-	code := run(&domains, whoisClient)
+	code := app.Run(&domains)
 
 	if code != ExitAvailable {
 		t.Error("wrong code")
