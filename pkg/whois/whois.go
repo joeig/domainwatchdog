@@ -7,33 +7,47 @@ import (
 	"regexp"
 )
 
+// Status is a domain registration status.
 type Status string
 
 var (
-	GivenDomain    Status = "domain is given"
+	// GivenDomain is the status for given domains.
+	GivenDomain Status = "domain is given"
+	// NotFoundDomain is the status if the domain wasn't found.
 	NotFoundDomain Status = "domain not found"
+	// ReservedDomain is the status if the domain is reserved to register.
 	ReservedDomain Status = "domain is reserved to register"
-	PremiumDomain  Status = "domain is available at premium price"
-	BlockedDomain  Status = "domain is blocked due to brand protection"
-	UnknownStatus  Status = "status is unknown"
+	// PremiumDomain is the status if the domain is available at premium price.
+	PremiumDomain Status = "domain is available at premium price"
+	// BlockedDomain is the status if the domain is blocked due to brand protection.
+	BlockedDomain Status = "domain is blocked due to brand protection"
+	// UnknownStatus is the status if the status is unknown.
+	UnknownStatus Status = "status is unknown"
 )
 
+// WhoisClient defines a whois client interface.
 type WhoisClient interface {
+	// Whois returns the whois result for a given domain, requested from specific servers.
 	Whois(domain string, servers ...string) (result string, err error)
 }
 
+// WhoisParse parses a whois result.
 type WhoisParse func(text string) (whoisInfo whoisParser.WhoisInfo, err error)
 
 var (
+	// DefaultClient contains the default WhoisClient implementation.
 	DefaultClient = whois.DefaultClient
-	DefaultParse  = whoisParser.Parse
+	// DefaultParse contains the default WhoisParse implementation.
+	DefaultParse = whoisParser.Parse
 )
 
+// Whois defines a whois interface.
 type Whois struct {
 	whoisClient WhoisClient
 	whoisParse  WhoisParse
 }
 
+// New initializes a Whois pointer by a given WhoisClient and WhoisParse.
 func New(whoisClient WhoisClient, whoisParse WhoisParse) *Whois {
 	return &Whois{
 		whoisClient: whoisClient,
@@ -41,6 +55,7 @@ func New(whoisClient WhoisClient, whoisParse WhoisParse) *Whois {
 	}
 }
 
+// GetDomainStatus returns the Status of a given domain.
 func (w *Whois) GetDomainStatus(domain string) (Status, error) {
 	result, err := w.whoisClient.Whois(domain)
 	if err != nil {
