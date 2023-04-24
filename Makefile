@@ -24,7 +24,7 @@ coverage:
 
 test:
 	mkdir -p ./out
-	$(GOTEST) -v ./... -covermode=count -coverprofile=./out/coverage.out
+	$(GOTEST) -v ./... -coverprofile=./out/coverage.out
 
 check-fmt:
 	$(GOFMT) -d ${GOFILES}
