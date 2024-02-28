@@ -50,8 +50,6 @@ func (a *appContext) Run(domainsList *string) int {
 	exitCode := ExitOK
 
 	for _, domain := range domains {
-		domain := domain
-
 		newExitCode := a.processDomain(domain)
 		if exitCode != ExitAvailable {
 			if newExitCode != ExitOK {

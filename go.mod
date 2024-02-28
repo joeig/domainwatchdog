@@ -1,6 +1,6 @@
 module github.com/joeig/domainwatchdog
 
-go 1.20
+go 1.22
 
 require (
 	github.com/likexian/whois v1.15.1
