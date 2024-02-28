@@ -3,7 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/joeig/domainwatchdog/pkg/whois"
-	"log"
+	"io"
+	"log/slog"
 	"os"
 	"strings"
 )
@@ -28,11 +29,20 @@ type WhoisClient interface {
 type appContext struct {
 	// WhoisClient holds an instance of WhoisClient.
 	WhoisClient WhoisClient
+
+	logger *slog.Logger
+}
+
+func newAppContext(whoisClient WhoisClient, stdout io.Writer) *appContext {
+	return &appContext{
+		WhoisClient: whoisClient,
+		logger:      slog.New(slog.NewTextHandler(stdout, nil)),
+	}
 }
 
 func (a *appContext) Run(domainsList *string) int {
 	if *domainsList == "" {
-		log.Println("no domains given")
+		a.logger.Error("no domains given")
 		return ExitFatalError
 	}
 
@@ -56,26 +66,29 @@ func (a *appContext) Run(domainsList *string) int {
 func (a *appContext) processDomain(domain string) int {
 	status, err := a.WhoisClient.GetDomainStatus(domain)
 	if err != nil {
-		log.Printf("cannot determine status of domain %q: %q", domain, err)
+		a.logger.Warn("cannot determine status of domain %q: %q", domain, err)
 		return ExitUnknownError
 	}
 
 	if status != whois.GivenDomain {
-		log.Printf("domain %q is available: %q", domain, status)
+		a.logger.Info("domain %q is available: %q", domain, status)
 		return ExitAvailable
 	}
 
-	log.Printf("status of domain %q: %q", domain, status)
+	a.logger.Info("status of domain %q: %q", domain, status)
 	return ExitOK
 }
 
+func runWithFlags(app *appContext, stderr io.Writer, args []string) int {
+	flagSet := flag.NewFlagSet(args[0], flag.ExitOnError)
+	flagSet.SetOutput(stderr)
+	domainsList := flagSet.String("domains", "", "Domains (comma separated)")
+	_ = flagSet.Parse(args[1:])
+
+	return app.Run(domainsList)
+}
+
 func main() {
-	domainsList := flag.String("domains", "", "Domains (comma separated)")
-	flag.Parse()
-
-	app := &appContext{
-		WhoisClient: whois.New(whois.DefaultClient, whois.DefaultParse),
-	}
-
-	os.Exit(app.Run(domainsList))
+	app := newAppContext(whois.New(whois.DefaultClient, whois.DefaultParse), os.Stdout)
+	os.Exit(runWithFlags(app, os.Stderr, os.Args))
 }
