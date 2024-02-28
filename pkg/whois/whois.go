@@ -111,8 +111,6 @@ var patterns = []*regexp.Regexp{
 
 func isGiven(status []string) bool {
 	for _, currentStatus := range status {
-		currentStatus := currentStatus
-
 		for _, pattern := range patterns {
 			if pattern.MatchString(currentStatus) {
 				return true
