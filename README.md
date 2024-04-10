@@ -1,6 +1,5 @@
 # Domainwatchdog 🐶
 
-[![Tests](https://github.com/joeig/domainwatchdog/workflows/Tests/badge.svg)](https://github.com/joeig/domainwatchdog/actions)
 [![Test coverage](https://img.shields.io/badge/coverage-95%25-success)](https://github.com/joeig/domainwatchdog/tree/master/.github/testcoverage.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/joeig/domainwatchdog)](https://goreportcard.com/report/github.com/joeig/domainwatchdog)
 
