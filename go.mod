@@ -3,7 +3,7 @@ module github.com/joeig/domainwatchdog
 go 1.22
 
 require (
-	github.com/likexian/whois v1.15.2
+	github.com/likexian/whois v1.15.3
 	github.com/likexian/whois-parser v1.24.15
 )
 
