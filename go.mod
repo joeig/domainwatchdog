@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/likexian/whois v1.15.3
-	github.com/likexian/whois-parser v1.24.15
+	github.com/likexian/whois-parser v1.24.16
 )
 
 require (
