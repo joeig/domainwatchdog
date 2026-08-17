@@ -10,5 +10,5 @@ require (
 require (
 	github.com/likexian/gokit v0.25.16 // indirect
 	golang.org/x/net v0.55.0 // indirect
-	golang.org/x/text v0.37.0 // indirect
+	golang.org/x/text v0.39.0 // indirect
 )
